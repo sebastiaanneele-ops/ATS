@@ -90,31 +90,57 @@ Verbinding testen: `php artisan ats:test-mail jouw@adres.nl`
 
 ---
 
-## 5. Naar productie
+## 5. Naar productie — MijnDomein (Plesk)
 
-Stappen voor een productieserver (eigen VPS of managed hosting zoals Laravel Forge):
+De ATS draait op een eigen subdomein, bijv. **`ats.personeelpartners.nl`**. WordPress blijft op
+het hoofddomein staan en haalt de vacatures op via de API van dit subdomein. Het wildcard
+A/AAAA-record dekt het subdomein al.
 
-1. **Code + dependencies**: `composer install --no-dev --optimize-autoloader`
-2. **Front-end assets**: `npm install && npm run build`
-3. **.env voor productie**:
+MijnDomein-webhosting draait op **Plesk** en ondersteunt alles wat nodig is: PHP 8.3+, SSH, cron en MySQL.
+
+**Stappenplan:**
+
+1. **Subdomein aanmaken** in Plesk: `ats.personeelpartners.nl`.
+2. **PHP-versie** voor het subdomein op **8.3 of hoger** zetten (Plesk → PHP-instellingen).
+   Zorg dat `proc_open` niet is uitgeschakeld (nodig voor Composer/artisan).
+3. **MySQL-database + gebruiker** aanmaken in Plesk (noteer naam, gebruiker, wachtwoord).
+4. **Code plaatsen via SSH** (SSH aanzetten in Plesk → Verbindingsinformatie):
+   ```bash
+   cd ~/                       # of de map van het subdomein
+   git clone https://github.com/sebastiaanneele-ops/ATS.git
+   cd ATS/ats-app
+   composer install --no-dev --optimize-autoloader
+   ```
+5. **Document-root** van het subdomein in Plesk laten wijzen naar de **`public`-map** van de app
+   (bijv. `.../ATS/ats-app/public`).
+6. **.env** aanmaken (kopie van `.env.example`) met productiewaarden:
    ```
    APP_ENV=production
    APP_DEBUG=false
    APP_URL=https://ats.personeelpartners.nl
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_DATABASE=...   DB_USERNAME=...   DB_PASSWORD=...
    ```
-   - Genereer een nieuwe `APP_KEY` (`php artisan key:generate`).
-   - Zet een sterke, unieke `ATS_API_KEY` (en vul dezelfde waarde in de WP-plugin).
-   - Database: bij voorkeur **MySQL** (`DB_CONNECTION=mysql` + gegevens).
-4. **Migraties**: `php artisan migrate --force` (eenmalig `--seed` voor fases + e-mailsjablonen).
-5. **Opslag**: zorg dat `storage/` schrijfbaar is; CV's staan in `storage/app/private` (niet publiek).
-6. **Geplande taken (AVG-retentie)** – voeg deze cron toe:
+   - `php artisan key:generate`
+   - Zet een sterke, unieke **`ATS_API_KEY`** (exact dezelfde waarde invullen in de WP-plugin).
+   - Vul de **MAIL_**-gegevens in (zie hoofdstuk 3).
+7. **Database vullen**: `php artisan migrate --force --seed`
+   (seed zet de pipeline-fases + e-mailsjablonen klaar; daarna kun je het admin-wachtwoord wijzigen).
+8. **HTTPS** aanzetten voor het subdomein (Let's Encrypt in Plesk). Verplicht: er gaan persoonsgegevens + CV's overheen.
+9. **Cronjob** toevoegen in Plesk (Ingeroosterde taken) — elke minuut:
    ```
-   * * * * * php /pad/naar/ats-app/artisan schedule:run >> /dev/null 2>&1
+   php /pad/naar/ATS/ats-app/artisan schedule:run
    ```
-7. **HTTPS** verplicht (sollicitanten sturen persoonsgegevens + CV).
+   (verzorgt de dagelijkse AVG-anonimisering).
 
-Aanbevolen subdomein: `ats.personeelpartners.nl` of `werkenbij.personeelpartners.nl`
-(het wildcard A/AAAA-record dekt subdomeinen al).
+> **Front-end build niet nodig**: het beheerpaneel (Filament) en de API gebruiken geen Vite-build;
+> Filament publiceert zijn eigen assets (al aanwezig in `public/`). `npm run build` is alleen nodig
+> als je de standaard Laravel-pagina's zou gebruiken.
+
+> **Geen SSH/Composer beschikbaar?** Dan kun je de app lokaal voorbereiden (`composer install`) en
+> de hele map incl. `vendor/` via SFTP uploaden; migraties draai je dan eenmalig via een tijdelijke
+> route of via de Plesk-scheduler. SSH is echter sterk aanbevolen.
 
 ---
 
