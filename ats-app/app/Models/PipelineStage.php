@@ -12,14 +12,25 @@ class PipelineStage extends Model
         'color',
         'position',
         'is_default',
+        'notify_applicant',
+        'email_subject',
+        'email_body',
     ];
 
     protected function casts(): array
     {
         return [
             'is_default' => 'boolean',
+            'notify_applicant' => 'boolean',
             'position' => 'integer',
         ];
+    }
+
+    public function notifiesApplicant(): bool
+    {
+        return $this->notify_applicant
+            && filled($this->email_subject)
+            && filled($this->email_body);
     }
 
     public function applications(): HasMany

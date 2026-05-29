@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ApplicationStatus;
+use App\Support\ApplicantNotifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,6 +45,17 @@ class Application extends Model
                 $application->pipeline_stage_id = PipelineStage::default()?->id;
             }
         });
+
+        // Stuur de fase-e-mail bij binnenkomst (ontvangstbevestiging) en bij fasewisseling.
+        static::created(function (Application $application): void {
+            ApplicantNotifier::notify($application, $application->stage()->first());
+        });
+
+        static::updated(function (Application $application): void {
+            if ($application->wasChanged('pipeline_stage_id')) {
+                ApplicantNotifier::notify($application, $application->stage()->first());
+            }
+        });
     }
 
     public function vacancy(): BelongsTo
@@ -64,6 +76,11 @@ class Application extends Model
     public function evaluations(): HasMany
     {
         return $this->hasMany(Evaluation::class);
+    }
+
+    public function emailLogs(): HasMany
+    {
+        return $this->hasMany(EmailLog::class)->latest();
     }
 
     public function hasCv(): bool

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Applications;
 use App\Enums\ApplicationStatus;
 use App\Filament\Resources\Applications\Pages\EditApplication;
 use App\Filament\Resources\Applications\Pages\ListApplications;
+use App\Filament\Resources\Applications\RelationManagers\EmailLogsRelationManager;
 use App\Filament\Resources\Applications\RelationManagers\EvaluationsRelationManager;
 use App\Filament\Resources\Applications\RelationManagers\NotesRelationManager;
 use App\Filament\Resources\Applications\Schemas\ApplicationForm;
@@ -49,6 +50,7 @@ class ApplicationResource extends Resource
         return [
             NotesRelationManager::class,
             EvaluationsRelationManager::class,
+            EmailLogsRelationManager::class,
         ];
     }
 
