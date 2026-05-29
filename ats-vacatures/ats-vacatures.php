@@ -5,7 +5,7 @@
  * Version:           0.1.0
  * Requires at least: 6.0
  * Requires PHP:      8.1
- * Author:            ISM eGroup
+ * Author:            Personeel Partners
  * Text Domain:       ats-vacatures
  *
  * @package ATS_Vacatures

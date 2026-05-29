@@ -22,7 +22,7 @@ class PipelineStageSeeder extends Seeder
                     .'<p>Bedankt voor je sollicitatie op de functie <strong>{{vacature}}</strong>. '
                     .'We hebben deze in goede orde ontvangen en bekijken je gegevens zorgvuldig. '
                     .'Je hoort zo snel mogelijk van ons.</p>'
-                    .'<p>Met vriendelijke groet,<br>Team ISM eGroup</p>',
+                    .'<p>Met vriendelijke groet,<br>Team Personeel Partners</p>',
             ],
             ['name' => 'Screening', 'color' => 'info', 'position' => 2, 'is_default' => false],
             [
@@ -36,7 +36,7 @@ class PipelineStageSeeder extends Seeder
                     .'<p>Goed nieuws! Naar aanleiding van je sollicitatie op de functie <strong>{{vacature}}</strong> '
                     .'nodigen we je graag uit voor een kennismakingsgesprek. We nemen binnenkort contact met je op '
                     .'om een afspraak in te plannen.</p>'
-                    .'<p>Met vriendelijke groet,<br>Team ISM eGroup</p>',
+                    .'<p>Met vriendelijke groet,<br>Team Personeel Partners</p>',
             ],
             ['name' => 'Gesprek 2', 'color' => 'warning', 'position' => 4, 'is_default' => false],
             ['name' => 'Aanbod', 'color' => 'primary', 'position' => 5, 'is_default' => false],
@@ -53,7 +53,7 @@ class PipelineStageSeeder extends Seeder
                     .'in je sollicitatie hebt gestoken. Na zorgvuldige afweging hebben we besloten je sollicitatie '
                     .'niet verder in behandeling te nemen.</p>'
                     .'<p>We wensen je veel succes met het vervolg van je loopbaan.</p>'
-                    .'<p>Met vriendelijke groet,<br>Team ISM eGroup</p>',
+                    .'<p>Met vriendelijke groet,<br>Team Personeel Partners</p>',
             ],
         ];
 

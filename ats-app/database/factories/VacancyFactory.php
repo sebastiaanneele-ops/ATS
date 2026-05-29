@@ -47,7 +47,7 @@ class VacancyFactory extends Factory
             'status' => VacancyStatus::Published,
             'published_at' => now()->subDays(fake()->numberBetween(0, 20)),
             'closes_at' => now()->addDays(fake()->numberBetween(14, 60)),
-            'apply_email' => 'vacatures@ism.test',
+            'apply_email' => 'vacatures@personeelpartners.nl',
         ];
     }
 
