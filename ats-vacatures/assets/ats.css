@@ -1,0 +1,181 @@
+/* ATS Vacatures - basisstyling (neutraal, buigt mee met het thema). */
+
+.ats-vacatures-list {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	margin: 1.5rem 0;
+}
+
+.ats-vacature-card {
+	display: block;
+	padding: 1.25rem 1.5rem;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	text-decoration: none;
+	color: inherit;
+	transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+	background: #fff;
+}
+
+.ats-vacature-card:hover {
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+	transform: translateY(-2px);
+	border-color: rgba(0, 0, 0, 0.2);
+}
+
+.ats-vacature-title {
+	margin: 0 0 0.5rem;
+	font-size: 1.2rem;
+	line-height: 1.3;
+}
+
+.ats-vacature-meta {
+	list-style: none;
+	margin: 0 0 0.75rem;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 0.75rem;
+	font-size: 0.875rem;
+	opacity: 0.8;
+}
+
+.ats-vacature-meta li {
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+.ats-vacature-meta li:not(:last-child)::after {
+	content: "•";
+	position: absolute;
+	right: -0.5rem;
+	opacity: 0.5;
+}
+
+.ats-vacature-more {
+	font-weight: 600;
+	font-size: 0.9rem;
+}
+
+.ats-vacature-detail {
+	max-width: 760px;
+	margin: 1.5rem auto;
+}
+
+.ats-vacature-detail .ats-vacature-title {
+	font-size: 1.9rem;
+}
+
+.ats-vacature-section {
+	margin: 1rem 0 1.5rem;
+	line-height: 1.7;
+}
+
+.ats-vacature-back a,
+.ats-vacature-more {
+	text-decoration: none;
+}
+
+.ats-button {
+	display: inline-block;
+	padding: 0.7rem 1.5rem;
+	border-radius: 8px;
+	background: #1d4ed8;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.ats-button:hover {
+	background: #1e40af;
+	color: #fff;
+}
+
+.ats-vacature-apply {
+	margin-top: 2rem;
+}
+
+.ats-vacatures-notice {
+	padding: 1rem 1.25rem;
+	border: 1px dashed rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.02);
+}
+
+/* Sollicitatieformulier */
+.ats-apply {
+	margin-top: 2.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ats-apply-form .ats-field {
+	margin-bottom: 1rem;
+}
+
+.ats-apply-form label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 0.3rem;
+}
+
+.ats-apply-form input[type="text"],
+.ats-apply-form input[type="email"],
+.ats-apply-form input[type="tel"],
+.ats-apply-form textarea {
+	width: 100%;
+	padding: 0.6rem 0.75rem;
+	border: 1px solid rgba(0, 0, 0, 0.25);
+	border-radius: 8px;
+	font: inherit;
+	box-sizing: border-box;
+}
+
+.ats-apply-form .ats-consent label {
+	font-weight: 400;
+	display: flex;
+	gap: 0.5rem;
+	align-items: flex-start;
+}
+
+.ats-apply-form .ats-consent input {
+	margin-top: 0.25rem;
+}
+
+/* Honeypot: verborgen voor mensen, zichtbaar voor bots. */
+.ats-hp {
+	position: absolute !important;
+	left: -9999px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.ats-form-message {
+	margin: 0.75rem 0;
+}
+
+.ats-form-message:empty {
+	display: none;
+}
+
+.ats-form-message.ats-success {
+	color: #166534;
+	background: #dcfce7;
+	padding: 0.75rem 1rem;
+	border-radius: 8px;
+}
+
+.ats-form-message.ats-error {
+	color: #991b1b;
+	background: #fee2e2;
+	padding: 0.75rem 1rem;
+	border-radius: 8px;
+}
+
+.ats-button[disabled] {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
