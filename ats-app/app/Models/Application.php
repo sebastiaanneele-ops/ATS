@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Enums\ApplicationStatus;
 use App\Support\ApplicantNotifier;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Application extends Model
 {
@@ -27,6 +29,7 @@ class Application extends Model
         'source',
         'consent_at',
         'ip_address',
+        'anonymized_at',
     ];
 
     protected function casts(): array
@@ -34,6 +37,7 @@ class Application extends Model
         return [
             'status' => ApplicationStatus::class,
             'consent_at' => 'datetime',
+            'anonymized_at' => 'datetime',
         ];
     }
 
@@ -93,5 +97,48 @@ class Application extends Model
         $avg = $this->evaluations()->avg('score');
 
         return $avg !== null ? round((float) $avg, 1) : null;
+    }
+
+    public function isAnonymized(): bool
+    {
+        return filled($this->anonymized_at);
+    }
+
+    /**
+     * Sollicitaties waarvan de bewaartermijn is verstreken en die nog niet
+     * geanonimiseerd zijn.
+     */
+    public function scopeDueForRetention(Builder $query, int $days): Builder
+    {
+        return $query
+            ->whereNull('anonymized_at')
+            ->where('created_at', '<=', now()->subDays($days));
+    }
+
+    /**
+     * Verwijder persoonsgegevens (AVG): CV weg, gegevens gewist, notities en
+     * e-maillogs verwijderd, beoordelings-toelichtingen geleegd. Niet-persoonlijke
+     * velden (vacature, fase, datums) blijven bewaard voor statistiek.
+     */
+    public function anonymize(): void
+    {
+        if ($this->cv_path && Storage::disk('local')->exists($this->cv_path)) {
+            Storage::disk('local')->delete($this->cv_path);
+        }
+
+        $this->notes()->delete();
+        $this->emailLogs()->delete();
+        $this->evaluations()->update(['comment' => null]);
+
+        $this->forceFill([
+            'name' => 'Geanonimiseerd',
+            'email' => 'verwijderd-'.$this->getKey().'@example.invalid',
+            'phone' => null,
+            'motivation' => null,
+            'cv_path' => null,
+            'cv_original_name' => null,
+            'ip_address' => null,
+            'anonymized_at' => now(),
+        ])->saveQuietly();
     }
 }

@@ -51,6 +51,11 @@ class ApplicationsTable
                     ->label('Ontvangen')
                     ->dateTime('d-m-Y H:i')
                     ->sortable(),
+                TextColumn::make('anonymized_at')
+                    ->label('Geanonimiseerd')
+                    ->dateTime('d-m-Y')
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
