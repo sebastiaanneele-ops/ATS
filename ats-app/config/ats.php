@@ -16,4 +16,17 @@ return [
 
     'retention_days' => (int) env('ATS_RETENTION_DAYS', 365),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Deploy-token
+    |--------------------------------------------------------------------------
+    |
+    | Geheime sleutel voor de deploy-hook (/__ops/deploy?token=...). Hiermee
+    | worden na een code-update de migraties en caches via de webserver
+    | herbouwd. Leeg laten schakelt de hook uit (endpoint geeft dan 403).
+    |
+    */
+
+    'deploy_token' => env('ATS_DEPLOY_TOKEN'),
+
 ];

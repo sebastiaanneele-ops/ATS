@@ -142,6 +142,28 @@ MijnDomein-webhosting draait op **Plesk** en ondersteunt alles wat nodig is: PHP
 > de hele map incl. `vendor/` via SFTP uploaden; migraties draai je dan eenmalig via een tijdelijke
 > route of via de Plesk-scheduler. SSH is echter sterk aanbevolen.
 
+### Updates uitrollen (na de eerste keer)
+
+De CLI in de chroot draait een oudere PHP-versie, dus migraties/cache draaien we via de **webserver**
+(PHP 8.4) met een beveiligde deploy-hook. Eenmalig instellen, daarna is uitrollen twee handelingen:
+
+1. **Deploy-token** zetten in `.env` op de server:
+   ```
+   ATS_DEPLOY_TOKEN=<lange willekeurige sleutel>
+   ```
+2. **Code binnenhalen** — kies één:
+   - **Plesk Git** (aanbevolen): koppel de repo `sebastiaanneele-ops/ATS`, zet automatische
+     deployment (pull bij push) aan. Code landt dan vanzelf op de server.
+   - Of handmatig: `git pull` / nieuwe ZIP uitpakken.
+3. **Migraties + caches verversen** — open in de browser:
+   ```
+   https://ats.personeelpartners.nl/__ops/deploy?token=<ATS_DEPLOY_TOKEN>
+   ```
+   Dit draait `migrate --force` en herbouwt de config/route-caches. Klaar.
+
+> `composer install` is alleen nodig wanneer er **nieuwe dependencies** bijkomen (zelden). Pure
+> code-wijzigingen vereisen alleen stap 2 + 3. De homepage (`/`) stuurt automatisch door naar `/admin`.
+
 ---
 
 ## 6. AVG / privacy
