@@ -32,6 +32,15 @@ class VacancyResource extends JsonResource
             'apply_email' => $this->apply_email,
             'published_at' => $this->published_at?->toIso8601String(),
             'closes_at' => $this->closes_at?->toDateString(),
+            // Alleen de velden die het sollicitatieformulier nodig heeft.
+            // De knock-outwaarden blijven intern (niet in de publieke API).
+            'screening_questions' => $this->whenLoaded('screeningQuestions', fn () => $this->screeningQuestions->map(fn ($q) => [
+                'id' => $q->id,
+                'label' => $q->label,
+                'type' => $q->type,
+                'options' => $q->answerOptions(),
+                'required' => $q->is_required,
+            ])->values()),
         ];
     }
 

@@ -91,6 +91,11 @@ class Vacancy extends Model
         return $this->hasMany(Application::class);
     }
 
+    public function screeningQuestions(): HasMany
+    {
+        return $this->hasMany(ScreeningQuestion::class)->orderBy('position');
+    }
+
     public function isPublic(): bool
     {
         return $this->status === VacancyStatus::Published

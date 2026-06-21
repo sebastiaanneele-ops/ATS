@@ -51,6 +51,7 @@ class VacancyController extends Controller
     {
         $vacancy = Vacancy::query()
             ->published()
+            ->with('screeningQuestions')
             ->where('slug', $slug)
             ->firstOrFail();
 

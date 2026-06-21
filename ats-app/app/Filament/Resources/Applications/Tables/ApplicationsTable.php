@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class ApplicationsTable
@@ -38,6 +39,12 @@ class ApplicationsTable
                 TextColumn::make('average_score')
                     ->label('Score')
                     ->state(fn ($record) => $record->averageScore() !== null ? $record->averageScore().'/5' : '—'),
+                TextColumn::make('knocked_out')
+                    ->label('Knock-out')
+                    ->badge()
+                    ->color('danger')
+                    ->state(fn ($record) => $record->knocked_out ? 'Knock-out' : null)
+                    ->placeholder('—'),
                 IconColumn::make('cv_path')
                     ->label('CV')
                     ->boolean()
@@ -70,6 +77,11 @@ class ApplicationsTable
                     ->relationship('vacancy', 'title')
                     ->searchable()
                     ->preload(),
+                TernaryFilter::make('knocked_out')
+                    ->label('Knock-out')
+                    ->placeholder('Alle')
+                    ->trueLabel('Alleen knock-outs')
+                    ->falseLabel('Zonder knock-out'),
             ])
             ->recordActions([
                 Action::make('cv')

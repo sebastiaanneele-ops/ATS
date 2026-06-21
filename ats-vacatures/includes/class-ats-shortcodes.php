@@ -168,6 +168,7 @@ class ATS_Vacatures_Shortcodes {
 					<label for="ats-motivation"><?php esc_html_e( 'Motivatie', 'ats-vacatures' ); ?></label>
 					<textarea id="ats-motivation" name="motivation" rows="5"></textarea>
 				</div>
+				<?php echo $this->render_questions( $vacancy ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<div class="ats-field">
 					<label for="ats-cv"><?php esc_html_e( 'CV (PDF, DOC of DOCX, max 5 MB)', 'ats-vacatures' ); ?></label>
 					<input type="file" id="ats-cv" name="cv" accept=".pdf,.doc,.docx" />
@@ -188,6 +189,50 @@ class ATS_Vacatures_Shortcodes {
 			</form>
 		</section>
 		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render de screeningvragen in het sollicitatieformulier.
+	 *
+	 * @param array $vacancy Vacaturedata.
+	 * @return string
+	 */
+	private function render_questions( array $vacancy ) {
+		if ( empty( $vacancy['screening_questions'] ) || ! is_array( $vacancy['screening_questions'] ) ) {
+			return '';
+		}
+
+		ob_start();
+		foreach ( $vacancy['screening_questions'] as $q ) {
+			$id       = isset( $q['id'] ) ? (int) $q['id'] : 0;
+			$type     = isset( $q['type'] ) ? $q['type'] : 'text';
+			$required = ! empty( $q['required'] );
+			$name     = 'answers[' . $id . ']';
+			$field_id = 'ats-q-' . $id;
+
+			echo '<div class="ats-field ats-question">';
+			echo '<label' . ( 'text' === $type ? ' for="' . esc_attr( $field_id ) . '"' : '' ) . '>'
+				. esc_html( $q['label'] ) . ( $required ? ' *' : '' ) . '</label>';
+
+			if ( 'boolean' === $type || 'choice' === $type ) {
+				$options = ( 'boolean' === $type )
+					? array( 'Ja', 'Nee' )
+					: ( isset( $q['options'] ) ? (array) $q['options'] : array() );
+
+				echo '<div class="ats-options">';
+				foreach ( $options as $opt ) {
+					echo '<label class="ats-option"><input type="radio" name="' . esc_attr( $name ) . '" value="'
+						. esc_attr( $opt ) . '"' . ( $required ? ' required' : '' ) . ' /> ' . esc_html( $opt ) . '</label>';
+				}
+				echo '</div>';
+			} else {
+				echo '<input type="text" id="' . esc_attr( $field_id ) . '" name="' . esc_attr( $name ) . '"'
+					. ( $required ? ' required' : '' ) . ' />';
+			}
+			echo '</div>';
+		}
+
 		return ob_get_clean();
 	}
 

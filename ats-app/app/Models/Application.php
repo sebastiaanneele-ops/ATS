@@ -26,6 +26,7 @@ class Application extends Model
         'cv_path',
         'cv_original_name',
         'status',
+        'knocked_out',
         'source',
         'consent_at',
         'ip_address',
@@ -36,6 +37,7 @@ class Application extends Model
     {
         return [
             'status' => ApplicationStatus::class,
+            'knocked_out' => 'boolean',
             'consent_at' => 'datetime',
             'anonymized_at' => 'datetime',
         ];
@@ -85,6 +87,11 @@ class Application extends Model
     public function emailLogs(): HasMany
     {
         return $this->hasMany(EmailLog::class)->latest();
+    }
+
+    public function screeningAnswers(): HasMany
+    {
+        return $this->hasMany(ScreeningAnswer::class);
     }
 
     public function hasCv(): bool

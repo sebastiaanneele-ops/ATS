@@ -8,6 +8,7 @@ use App\Filament\Resources\Applications\Pages\ListApplications;
 use App\Filament\Resources\Applications\RelationManagers\EmailLogsRelationManager;
 use App\Filament\Resources\Applications\RelationManagers\EvaluationsRelationManager;
 use App\Filament\Resources\Applications\RelationManagers\NotesRelationManager;
+use App\Filament\Resources\Applications\RelationManagers\ScreeningAnswersRelationManager;
 use App\Filament\Resources\Applications\Schemas\ApplicationForm;
 use App\Filament\Resources\Applications\Tables\ApplicationsTable;
 use App\Models\Application;
@@ -48,6 +49,7 @@ class ApplicationResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ScreeningAnswersRelationManager::class,
             NotesRelationManager::class,
             EvaluationsRelationManager::class,
             EmailLogsRelationManager::class,

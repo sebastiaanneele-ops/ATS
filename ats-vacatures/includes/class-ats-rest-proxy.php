@@ -63,6 +63,15 @@ class ATS_Vacatures_Rest_Proxy {
 			'company_website' => sanitize_text_field( (string) $request->get_param( 'company_website' ) ),
 		);
 
+		// Antwoorden op screeningvragen doorsturen als answers[<vraag-id>].
+		$answers = $request->get_param( 'answers' );
+		if ( is_array( $answers ) ) {
+			foreach ( $answers as $qid => $val ) {
+				$val = is_array( $val ) ? implode( ', ', $val ) : (string) $val;
+				$fields[ 'answers[' . (int) $qid . ']' ] = sanitize_text_field( $val );
+			}
+		}
+
 		$files = $request->get_file_params();
 		$cv    = isset( $files['cv'] ) ? $files['cv'] : null;
 
