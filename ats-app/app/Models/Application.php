@@ -53,15 +53,33 @@ class Application extends Model
         });
 
         // Stuur de fase-e-mail bij binnenkomst (ontvangstbevestiging) en bij fasewisseling.
+        // Log ook de fase-overgang voor de doorlooptijd-/funnel-rapportage.
         static::created(function (Application $application): void {
+            $application->logStageEntry();
             ApplicantNotifier::notify($application, $application->stage()->first());
         });
 
         static::updated(function (Application $application): void {
             if ($application->wasChanged('pipeline_stage_id')) {
+                $application->logStageEntry();
                 ApplicantNotifier::notify($application, $application->stage()->first());
             }
         });
+    }
+
+    /**
+     * Leg vast wanneer de sollicitatie deze fase binnenkwam.
+     */
+    public function logStageEntry(): void
+    {
+        if (blank($this->pipeline_stage_id)) {
+            return;
+        }
+
+        $this->stageLogs()->create([
+            'pipeline_stage_id' => $this->pipeline_stage_id,
+            'entered_at' => now(),
+        ]);
     }
 
     public function vacancy(): BelongsTo
@@ -92,6 +110,11 @@ class Application extends Model
     public function screeningAnswers(): HasMany
     {
         return $this->hasMany(ScreeningAnswer::class);
+    }
+
+    public function stageLogs(): HasMany
+    {
+        return $this->hasMany(ApplicationStageLog::class)->orderBy('entered_at');
     }
 
     public function hasCv(): bool
